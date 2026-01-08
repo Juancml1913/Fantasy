@@ -1,5 +1,6 @@
-﻿using Fantasy.Backend.Data;
+using Fantasy.Backend.Data;
 using Fantasy.Shared.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -34,6 +35,7 @@ public class CountriesController : ControllerBase
         return Ok(country);
     }
 
+    [Authorize]
     [HttpPut]
     public async Task<IActionResult> PutAsync(Country country)
     {
@@ -49,6 +51,7 @@ public class CountriesController : ControllerBase
         return NoContent();
     }
 
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> PostAsync(Country country)
     {
@@ -57,6 +60,7 @@ public class CountriesController : ControllerBase
         return Ok(country);
     }
 
+    [Authorize]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteAsync(int id)
     {
