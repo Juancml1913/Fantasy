@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Json.Serialization;
 using Fantasy.Backend.Data;
 using Fantasy.Backend.UnitsOfWork.Implementations;
 using Fantasy.Backend.UnitsOfWork.Interfaces;
@@ -11,7 +12,11 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    });
 builder.Services.AddEndpointsApiExplorer();
 
 // Swagger with JWT support

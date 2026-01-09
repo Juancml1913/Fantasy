@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Fantasy.Shared.Entities;
 
@@ -18,5 +19,6 @@ public class Tournament
 
     public DateTime EndDate { get; set; }
 
+    [JsonIgnore]
     public ICollection<TournamentTeam> TournamentTeams { get; set; } = new List<TournamentTeam>();
 }

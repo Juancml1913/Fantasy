@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace Fantasy.Shared.Entities;
 
 public class TournamentTeam
@@ -6,9 +8,11 @@ public class TournamentTeam
 
     public int TournamentId { get; set; }
 
-    public Tournament Tournament { get; set; } = null!;
+    [JsonIgnore]
+    public Tournament? Tournament { get; set; }
 
     public int TeamId { get; set; }
 
-    public Team Team { get; set; } = null!;
+    [JsonIgnore]
+    public Team? Team { get; set; }
 }
