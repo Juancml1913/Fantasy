@@ -10,7 +10,24 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7128") });
+// Get API URL from configuration
+var apiBaseUrl = builder.Configuration.GetValue<string>("ApiSettings:BaseUrl")
+    ?? "https://localhost:7128";
+
+// Configure HttpClient with IHttpClientFactory pattern
+builder.Services.AddHttpClient("API", client =>
+{
+    client.BaseAddress = new Uri(apiBaseUrl);
+    client.DefaultRequestHeaders.Add("Accept", "application/json");
+});
+
+// Register HttpClient for injection (uses the named client)
+builder.Services.AddScoped(sp =>
+{
+    var factory = sp.GetRequiredService<IHttpClientFactory>();
+    return factory.CreateClient("API");
+});
+
 builder.Services.AddScoped<IRepository, Repository>();
 builder.Services.AddLocalization();
 

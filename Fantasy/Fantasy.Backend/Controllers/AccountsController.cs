@@ -7,12 +7,14 @@ using Fantasy.Shared.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Fantasy.Backend.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[EnableRateLimiting("fixed")]
 public class AccountsController : ControllerBase
 {
     private readonly UserManager<User> _userManager;
@@ -30,6 +32,7 @@ public class AccountsController : ControllerBase
     }
 
     [HttpPost("register")]
+    [EnableRateLimiting("auth")]
     public async Task<IActionResult> Register([FromBody] RegisterDTO model)
     {
         var user = new User
@@ -52,6 +55,7 @@ public class AccountsController : ControllerBase
     }
 
     [HttpPost("login")]
+    [EnableRateLimiting("auth")]
     public async Task<IActionResult> Login([FromBody] LoginDTO model)
     {
         var user = await _userManager.FindByEmailAsync(model.Email);
@@ -60,9 +64,19 @@ public class AccountsController : ControllerBase
             return BadRequest("Invalid email or password");
         }
 
-        var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, lockoutOnFailure: false);
+        // Check if user is locked out
+        if (await _userManager.IsLockedOutAsync(user))
+        {
+            return BadRequest("Account is locked. Please try again later.");
+        }
+
+        var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, lockoutOnFailure: true);
         if (!result.Succeeded)
         {
+            if (result.IsLockedOut)
+            {
+                return BadRequest("Account has been locked due to multiple failed attempts. Please try again later.");
+            }
             return BadRequest("Invalid email or password");
         }
 
@@ -144,6 +158,7 @@ public class AccountsController : ControllerBase
     }
 
     [HttpPost("forgotpassword")]
+    [EnableRateLimiting("auth")]
     public async Task<IActionResult> ForgotPassword([FromBody] string email)
     {
         var user = await _userManager.FindByEmailAsync(email);
@@ -161,6 +176,7 @@ public class AccountsController : ControllerBase
     }
 
     [HttpPost("resetpassword")]
+    [EnableRateLimiting("auth")]
     public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDTO model)
     {
         var user = await _userManager.FindByEmailAsync(model.Email);
