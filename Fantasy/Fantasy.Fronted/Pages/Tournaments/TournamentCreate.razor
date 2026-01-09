@@ -1,0 +1,8 @@
+@page "/tournaments/create"
+
+<h3>@Localizer["New"] @Localizer["Tournament"]</h3>
+
+<TournamentForm Tournament="Tournament"
+                OnValidSubmit="CreateAsync"
+                ErrorMessage="@ErrorMessage"
+                IsLoading="@IsLoading" />

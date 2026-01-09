@@ -1,0 +1,40 @@
+@using Fantasy.Shared.Entities
+
+<EditForm Model="Tournament" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator />
+    <div class="mb-3">
+        <label class="form-label">@Localizer["Name"]</label>
+        <InputText class="form-control" @bind-Value="Tournament.Name" />
+        <ValidationMessage For="@(() => Tournament.Name)" />
+    </div>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label class="form-label">@Localizer["StartDate"]</label>
+            <InputDate class="form-control" @bind-Value="Tournament.StartDate" />
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">@Localizer["EndDate"]</label>
+            <InputDate class="form-control" @bind-Value="Tournament.EndDate" />
+        </div>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">@Localizer["Image"] (URL)</label>
+        <InputText class="form-control" @bind-Value="Tournament.Image" />
+    </div>
+    <div class="mb-3 form-check">
+        <InputCheckbox class="form-check-input" @bind-Value="Tournament.IsActive" />
+        <label class="form-check-label">@Localizer["IsActive"]</label>
+    </div>
+    @if (!string.IsNullOrEmpty(ErrorMessage))
+    {
+        <div class="alert alert-danger">@ErrorMessage</div>
+    }
+    <button type="submit" class="btn btn-primary" disabled="@IsLoading">
+        @if (IsLoading)
+        {
+            <span class="spinner-border spinner-border-sm" role="status"></span>
+        }
+        @Localizer["Save"]
+    </button>
+    <a href="/tournaments" class="btn btn-secondary">@Localizer["Cancel"]</a>
+</EditForm>

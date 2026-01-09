@@ -1,0 +1,9 @@
+@page "/teams/create"
+
+<h3>@Localizer["New"] @Localizer["Team"]</h3>
+
+<TeamForm Team="Team"
+          Countries="Countries"
+          OnValidSubmit="CreateAsync"
+          ErrorMessage="@ErrorMessage"
+          IsLoading="@IsLoading" />

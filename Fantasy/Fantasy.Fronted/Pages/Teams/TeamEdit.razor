@@ -1,0 +1,16 @@
+@page "/teams/edit/{Id:int}"
+
+<h3>@Localizer["Edit"] @Localizer["Team"]</h3>
+
+@if (Team == null)
+{
+    <p>@Localizer["Loading"]</p>
+}
+else
+{
+    <TeamForm Team="Team"
+              Countries="Countries"
+              OnValidSubmit="UpdateAsync"
+              ErrorMessage="@ErrorMessage"
+              IsLoading="@IsLoading" />
+}

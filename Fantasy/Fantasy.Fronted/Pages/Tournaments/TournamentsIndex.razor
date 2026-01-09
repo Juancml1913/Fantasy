@@ -1,0 +1,47 @@
+@page "/tournaments"
+
+<h3>@Localizer["Tournaments"]</h3>
+
+<div class="mb-3">
+    <a class="btn btn-primary" href="/tournaments/create">@Localizer["New"] @Localizer["Tournament"]</a>
+</div>
+
+<GenericList MyList="Tournaments">
+    <Body>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>@Localizer["Name"]</th>
+                    <th>@Localizer["StartDate"]</th>
+                    <th>@Localizer["EndDate"]</th>
+                    <th>@Localizer["IsActive"]</th>
+                    <th>@Localizer["Actions"]</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var tournament in Tournaments!)
+                {
+                    <tr>
+                        <td>@tournament.Name</td>
+                        <td>@tournament.StartDate.ToShortDateString()</td>
+                        <td>@tournament.EndDate.ToShortDateString()</td>
+                        <td>
+                            @if (tournament.IsActive)
+                            {
+                                <span class="badge bg-success">@Localizer["Yes"]</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">@Localizer["No"]</span>
+                            }
+                        </td>
+                        <td>
+                            <a class="btn btn-warning btn-sm" href="/tournaments/edit/@tournament.Id">@Localizer["Edit"]</a>
+                            <button class="btn btn-danger btn-sm" @onclick="() => DeleteAsync(tournament)">@Localizer["Delete"]</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </Body>
+</GenericList>

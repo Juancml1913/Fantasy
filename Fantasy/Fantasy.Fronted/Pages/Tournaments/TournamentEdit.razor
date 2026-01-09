@@ -1,0 +1,15 @@
+@page "/tournaments/edit/{Id:int}"
+
+<h3>@Localizer["Edit"] @Localizer["Tournament"]</h3>
+
+@if (Tournament == null)
+{
+    <p>@Localizer["Loading"]</p>
+}
+else
+{
+    <TournamentForm Tournament="Tournament"
+                    OnValidSubmit="UpdateAsync"
+                    ErrorMessage="@ErrorMessage"
+                    IsLoading="@IsLoading" />
+}

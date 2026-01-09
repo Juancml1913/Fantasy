@@ -1,0 +1,40 @@
+@using Fantasy.Shared.Entities
+
+<EditForm Model="Team" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator />
+    <div class="mb-3">
+        <label class="form-label">@Localizer["Name"]</label>
+        <InputText class="form-control" @bind-Value="Team.Name" />
+        <ValidationMessage For="@(() => Team.Name)" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">@Localizer["Country"]</label>
+        <InputSelect class="form-select" @bind-Value="Team.CountryId">
+            <option value="0">@Localizer["SelectCountry"]</option>
+            @if (Countries != null)
+            {
+                @foreach (var country in Countries)
+                {
+                    <option value="@country.Id">@country.Name</option>
+                }
+            }
+        </InputSelect>
+        <ValidationMessage For="@(() => Team.CountryId)" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">@Localizer["Image"] (URL)</label>
+        <InputText class="form-control" @bind-Value="Team.Image" />
+    </div>
+    @if (!string.IsNullOrEmpty(ErrorMessage))
+    {
+        <div class="alert alert-danger">@ErrorMessage</div>
+    }
+    <button type="submit" class="btn btn-primary" disabled="@IsLoading">
+        @if (IsLoading)
+        {
+            <span class="spinner-border spinner-border-sm" role="status"></span>
+        }
+        @Localizer["Save"]
+    </button>
+    <a href="/teams" class="btn btn-secondary">@Localizer["Cancel"]</a>
+</EditForm>
