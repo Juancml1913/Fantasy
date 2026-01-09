@@ -1,5 +1,7 @@
 using System.Text;
 using Fantasy.Backend.Data;
+using Fantasy.Backend.UnitsOfWork.Implementations;
+using Fantasy.Backend.UnitsOfWork.Interfaces;
 using Fantasy.Shared.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -83,6 +85,9 @@ builder.Services.AddAuthentication(options =>
 
 // Register SeedDb
 builder.Services.AddScoped<SeedDb>();
+
+// Register UnitOfWork
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 var app = builder.Build();
 

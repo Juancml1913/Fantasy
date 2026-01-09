@@ -1,8 +1,7 @@
-using Fantasy.Backend.Data;
+using Fantasy.Backend.UnitsOfWork.Interfaces;
 using Fantasy.Shared.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Fantasy.Backend.Controllers;
 
@@ -10,24 +9,24 @@ namespace Fantasy.Backend.Controllers;
 [Route("api/[controller]")]
 public class CountriesController : ControllerBase
 {
-    private readonly DataContext _context;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public CountriesController(DataContext context)
+    public CountriesController(IUnitOfWork unitOfWork)
     {
-        _context=context;
+        _unitOfWork = unitOfWork;
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAsync()
     {
-        var countries = await _context.Countries.ToListAsync();
+        var countries = await _unitOfWork.Countries.GetAllAsync();
         return Ok(countries);
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetAsync(int id)
     {
-        var country = await _context.Countries.FindAsync(id);
+        var country = await _unitOfWork.Countries.GetByIdAsync(id);
         if (country == null)
         {
             return NotFound();
@@ -39,15 +38,15 @@ public class CountriesController : ControllerBase
     [HttpPut]
     public async Task<IActionResult> PutAsync(Country country)
     {
-        var currentCountry = await _context.Countries.FindAsync(country.Id);
+        var currentCountry = await _unitOfWork.Countries.GetByIdAsync(country.Id);
         if (currentCountry == null)
         {
             return NotFound();
         }
 
         currentCountry.Name = country.Name;
-        _context.Update(currentCountry);
-        await _context.SaveChangesAsync();
+        _unitOfWork.Countries.Update(currentCountry);
+        await _unitOfWork.SaveChangesAsync();
         return NoContent();
     }
 
@@ -55,8 +54,8 @@ public class CountriesController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> PostAsync(Country country)
     {
-        _context.Add(country);
-        await _context.SaveChangesAsync();
+        await _unitOfWork.Countries.AddAsync(country);
+        await _unitOfWork.SaveChangesAsync();
         return Ok(country);
     }
 
@@ -64,14 +63,14 @@ public class CountriesController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteAsync(int id)
     {
-        var country = await _context.Countries.FindAsync(id);
+        var country = await _unitOfWork.Countries.GetByIdAsync(id);
         if (country == null)
         {
             return NotFound();
         }
 
-        _context.Remove(country);
-        await _context.SaveChangesAsync();
+        _unitOfWork.Countries.Delete(country);
+        await _unitOfWork.SaveChangesAsync();
         return NoContent();
     }
 }
