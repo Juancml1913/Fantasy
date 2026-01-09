@@ -1,0 +1,62 @@
+@page "/register"
+
+<div class="row justify-content-center">
+    <div class="col-md-5">
+        <div class="card">
+            <div class="card-header">
+                <h3>@Localizer["Register"]</h3>
+            </div>
+            <div class="card-body">
+                <EditForm Model="RegisterModel" OnValidSubmit="HandleRegister">
+                    <DataAnnotationsValidator />
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">@Localizer["FirstName"]</label>
+                            <InputText class="form-control" @bind-Value="RegisterModel.FirstName" />
+                            <ValidationMessage For="@(() => RegisterModel.FirstName)" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">@Localizer["LastName"]</label>
+                            <InputText class="form-control" @bind-Value="RegisterModel.LastName" />
+                            <ValidationMessage For="@(() => RegisterModel.LastName)" />
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">@Localizer["Email"]</label>
+                        <InputText class="form-control" @bind-Value="RegisterModel.Email" />
+                        <ValidationMessage For="@(() => RegisterModel.Email)" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">@Localizer["Password"]</label>
+                        <InputText type="password" class="form-control" @bind-Value="RegisterModel.Password" />
+                        <ValidationMessage For="@(() => RegisterModel.Password)" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">@Localizer["ConfirmPassword"]</label>
+                        <InputText type="password" class="form-control" @bind-Value="RegisterModel.ConfirmPassword" />
+                        <ValidationMessage For="@(() => RegisterModel.ConfirmPassword)" />
+                    </div>
+                    @if (!string.IsNullOrEmpty(ErrorMessage))
+                    {
+                        <div class="alert alert-danger">@ErrorMessage</div>
+                    }
+                    @if (!string.IsNullOrEmpty(SuccessMessage))
+                    {
+                        <div class="alert alert-success">@SuccessMessage</div>
+                    }
+                    <button type="submit" class="btn btn-primary w-100" disabled="@IsLoading">
+                        @if (IsLoading)
+                        {
+                            <span class="spinner-border spinner-border-sm" role="status"></span>
+                        }
+                        @Localizer["Register"]
+                    </button>
+                </EditForm>
+                <hr />
+                <p class="text-center">
+                    @Localizer["HaveAccount"] <a href="/login">@Localizer["Login"]</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

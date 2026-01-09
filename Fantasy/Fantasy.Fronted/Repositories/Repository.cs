@@ -36,17 +36,25 @@ public class Repository : IRepository
         return new HttpResponseWrapper<object>(null, !responseHttp.IsSuccessStatusCode, responseHttp);
     }
 
-    public async Task<HttpResponseWrapper<IActionResponse>> PostAsync<T, IActionResponse>(string url, T model)
+    public async Task<HttpResponseWrapper<TActionResponse>> PostAsync<T, TActionResponse>(string url, T model)
     {
         var messageJSON = JsonSerializer.Serialize(model);
         var messageContent = new StringContent(messageJSON, Encoding.UTF8, "application/json");
         var responseHttp = await _httpClient.PostAsync(url, messageContent);
         if (responseHttp.IsSuccessStatusCode)
         {
-            var response = await UnserializeAnswer<IActionResponse>(responseHttp);
-            return new HttpResponseWrapper<IActionResponse>(response, false, responseHttp);
+            var response = await UnserializeAnswer<TActionResponse>(responseHttp);
+            return new HttpResponseWrapper<TActionResponse>(response, false, responseHttp);
         }
-        return new HttpResponseWrapper<IActionResponse>(default, !responseHttp.IsSuccessStatusCode, responseHttp);
+        return new HttpResponseWrapper<TActionResponse>(default, !responseHttp.IsSuccessStatusCode, responseHttp);
+    }
+
+    public async Task<HttpResponseWrapper<object>> PutAsync<T>(string url, T model)
+    {
+        var messageJSON = JsonSerializer.Serialize(model);
+        var messageContent = new StringContent(messageJSON, Encoding.UTF8, "application/json");
+        var responseHttp = await _httpClient.PutAsync(url, messageContent);
+        return new HttpResponseWrapper<object>(null, !responseHttp.IsSuccessStatusCode, responseHttp);
     }
 
     private async Task<T?> UnserializeAnswer<T>(HttpResponseMessage responseHttp)

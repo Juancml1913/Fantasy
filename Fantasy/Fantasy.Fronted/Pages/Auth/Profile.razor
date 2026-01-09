@@ -1,0 +1,87 @@
+@page "/profile"
+@attribute [Authorize]
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h3>@Localizer["Profile"]</h3>
+            </div>
+            <div class="card-body">
+                @if (UserProfile == null)
+                {
+                    <p>@Localizer["Loading"]</p>
+                }
+                else
+                {
+                    <EditForm Model="UserProfile" OnValidSubmit="HandleUpdateProfile">
+                        <DataAnnotationsValidator />
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">@Localizer["FirstName"]</label>
+                                <InputText class="form-control" @bind-Value="UserProfile.FirstName" />
+                                <ValidationMessage For="@(() => UserProfile.FirstName)" />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">@Localizer["LastName"]</label>
+                                <InputText class="form-control" @bind-Value="UserProfile.LastName" />
+                                <ValidationMessage For="@(() => UserProfile.LastName)" />
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">@Localizer["Email"]</label>
+                            <input type="email" class="form-control" value="@UserProfile.Email" disabled />
+                        </div>
+                        @if (!string.IsNullOrEmpty(ErrorMessage))
+                        {
+                            <div class="alert alert-danger">@ErrorMessage</div>
+                        }
+                        @if (!string.IsNullOrEmpty(SuccessMessage))
+                        {
+                            <div class="alert alert-success">@SuccessMessage</div>
+                        }
+                        <button type="submit" class="btn btn-primary" disabled="@IsLoading">
+                            @if (IsLoading)
+                            {
+                                <span class="spinner-border spinner-border-sm" role="status"></span>
+                            }
+                            @Localizer["Save"]
+                        </button>
+                    </EditForm>
+
+                    <hr />
+
+                    <h4>@Localizer["ChangePassword"]</h4>
+                    <EditForm Model="PasswordModel" OnValidSubmit="HandleChangePassword">
+                        <DataAnnotationsValidator />
+                        <div class="mb-3">
+                            <label class="form-label">@Localizer["CurrentPassword"]</label>
+                            <InputText type="password" class="form-control" @bind-Value="PasswordModel.CurrentPassword" />
+                            <ValidationMessage For="@(() => PasswordModel.CurrentPassword)" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">@Localizer["NewPassword"]</label>
+                            <InputText type="password" class="form-control" @bind-Value="PasswordModel.NewPassword" />
+                            <ValidationMessage For="@(() => PasswordModel.NewPassword)" />
+                        </div>
+                        @if (!string.IsNullOrEmpty(PasswordErrorMessage))
+                        {
+                            <div class="alert alert-danger">@PasswordErrorMessage</div>
+                        }
+                        @if (!string.IsNullOrEmpty(PasswordSuccessMessage))
+                        {
+                            <div class="alert alert-success">@PasswordSuccessMessage</div>
+                        }
+                        <button type="submit" class="btn btn-secondary" disabled="@IsPasswordLoading">
+                            @if (IsPasswordLoading)
+                            {
+                                <span class="spinner-border spinner-border-sm" role="status"></span>
+                            }
+                            @Localizer["ChangePassword"]
+                        </button>
+                    </EditForm>
+                }
+            </div>
+        </div>
+    </div>
+</div>
